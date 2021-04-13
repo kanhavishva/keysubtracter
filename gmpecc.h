@@ -1,27 +1,25 @@
 #ifndef GMPECC_H
 #define GMPECC_H
 
+typedef struct Point {
+    mpz_t x;
+    mpz_t y;
+} Point;
 
-struct Point {
-	mpz_t x;
-	mpz_t y;
-};
+typedef struct Elliptic_Curve {
+    mpz_t p;
+    mpz_t n;
+} Elliptic_Curve;
 
-struct Elliptic_Curve {
-	mpz_t p;
-	mpz_t n;
-};
+void Point_Doubling(const Point *P, Point *R);
+void Point_Addition(Point *P, Point *Q, Point *R);
+void Scalar_Multiplication(const Point *P, Point *R, const mpz_t *m);
+void Point_Negation(const Point *A, Point *S);
+void init_doublingG(const Point *P);
 
-
-void Point_Doubling(struct Point *P, struct Point *R);
-void Point_Addition(struct Point *P, struct Point *Q, struct Point *R);
-void Scalar_Multiplication(struct Point P, struct Point *R, mpz_t m);
-void Point_Negation(struct Point *A, struct Point *S);
-void init_doublingG(struct Point *P);
-
-struct Elliptic_Curve EC;
-struct Point G;
-struct Point DoublingG[256];
+Elliptic_Curve EC;
+Point G;
+Point DoublingG[256];
 
 
 #endif
