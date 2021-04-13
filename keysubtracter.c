@@ -32,6 +32,7 @@ void showhelp();
 void set_bit(char *param);
 void set_publickey(char *param);
 void set_range(char *param);
+double_t calc_perc(uint64_t x, uint64_t max);
 
 char *str_output = NULL;
 Point target_publickey, base_publickey, sum_publickey, negated_publickey, dst_publickey;
@@ -78,7 +79,7 @@ int main(int argc, char **argv)
             FLAG_FORMAT = atoi(optarg);
             break;
         case 'n':
-            N = strtol((char *)optarg, NULL, 10);
+            N = strtoull((char *)optarg, NULL, 10);
             if (N <= 0)   {
                 fprintf(stderr, "[E] invalid bit N number %s\n", optarg);
                 exit(0);
@@ -199,6 +200,9 @@ int main(int argc, char **argv)
                         fwrite(bin, 1, 33, OUTPUT);
                     }
                 }
+                double_t perc = calc_perc(i, M);
+                printf("\r%0.6lf", perc);
+                fflush(stdout);
             }
             if (mpz_tstbit(target_publickey.y, 0) == 0) {      // Even
                 if (FLAG_FORMAT == 1) {
@@ -292,6 +296,9 @@ int main(int argc, char **argv)
                 mpz_set(sum_publickey.x, dst_publickey.x);
                 mpz_set(sum_publickey.y, dst_publickey.y);
                 mpz_add(sum_key, sum_key, base_key);
+                double_t perc = calc_perc(i, M);
+                printf("\r%0.6lf", perc);
+                fflush(stdout);
             }
             if (mpz_tstbit(target_publickey.y, 0) == 0) {      // Even
                 if (FLAG_FORMAT == 1) {
@@ -313,7 +320,7 @@ int main(int argc, char **argv)
                     unsigned char bin[33];
                     memset(buf, '\0', 66 + 1);
                     memset(bin, '0', 33);
-                    gmp_sprintf(buf, "02%0.64Zx", target_publickey.x);
+                    gmp_sprintf(buf, "03%0.64Zx", target_publickey.x);
                     hexs2bin(buf, bin);
                     fwrite(bin, 1, 33, OUTPUT);
                 }
@@ -460,3 +467,10 @@ void set_range(char *param)
     freetokenizer(&tk);
     free(dest);
 }
+
+
+double_t calc_perc(uint64_t x, uint64_t max)
+{
+    return (double_t)(((double_t)x) / ((double_t)max) * 100.0 /*+ 0.5*/);
+}
+
