@@ -43,6 +43,7 @@ int FLAG_RANDOM = 0;
 int FLAG_PUBLIC = 0;
 int FLAG_FORMAT = 0;
 int FLAG_N;
+int FLAG_X = 0;
 uint64_t N = 0, M;
 
 mpz_t min_range, max_range, diff, TWO, base_key, sum_key, dst_key;
@@ -65,7 +66,7 @@ int main(int argc, char **argv)
     mpz_init_set_ui(TWO, 2);
     mpz_init(target_publickey.x);
     mpz_init_set_ui(target_publickey.y, 0);
-    while ((c = getopt(argc, argv, "hvRb:n:o:p:r:f:")) != -1) {
+    while ((c = getopt(argc, argv, "xhvRb:n:o:p:r:f:")) != -1) {
         switch (c) {
         case 'h':
             showhelp();
@@ -100,6 +101,9 @@ int main(int argc, char **argv)
         case 'R':
             FLAG_RANDOM = 1;
             break;
+        case 'x':
+            FLAG_X = 1;
+            break;
         case 'v':
             printf("version %s\n", version);
             break;
@@ -110,6 +114,12 @@ int main(int argc, char **argv)
         fprintf(stderr, "[E] there are some missing parameter\n");
         showhelp();
         exit(1);
+    }
+
+    if (FLAG_X == 0) {
+
+    } else {
+
     }
 
     if ((FLAG_BIT || FLAG_RANGE) && FLAG_PUBLIC && FLAG_N)       {
@@ -149,84 +159,170 @@ int main(int argc, char **argv)
                 Point_Negation(&base_publickey, &negated_publickey);
                 Point_Addition(&base_publickey, &target_publickey, &dst_publickey);
                 if (mpz_tstbit(dst_publickey.y, 0) == 0) {      // Even
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "02%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "02%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 } else {
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "03%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "03%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # - %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 }
 
                 Point_Addition(&negated_publickey, &target_publickey, &dst_publickey);
                 if (mpz_tstbit(dst_publickey.y, 0) == 0) {      // Even
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "02%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
+                    }
+                } else {
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "03%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
+                    }
+                }
+                if (i % 10000 == 0) {
+                    double_t perc = calc_perc(i, M);
+                    printf("\r%0.6lf", perc);
+                    fflush(stdout);
+                }
+            }
+            if (mpz_tstbit(target_publickey.y, 0) == 0) {      // Even
+                if (FLAG_X == 0) {
                     if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "02%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        gmp_fprintf(OUTPUT, "02%0.64Zx # target\n", target_publickey.x);
                     } else if (FLAG_FORMAT == 2) {
                         char buf[66 + 1];
                         unsigned char bin[33];
                         memset(buf, '\0', 66 + 1);
                         memset(bin, '0', 33);
-                        gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
+                        gmp_sprintf(buf, "02%0.64Zx", target_publickey.x);
                         hexs2bin(buf, bin);
                         fwrite(bin, 1, 33, OUTPUT);
                     }
                 } else {
                     if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "03%0.64Zx # + %Zx\n", dst_publickey.x, base_key);
+                        gmp_fprintf(OUTPUT, "%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[64 + 1];
+                        unsigned char bin[32];
+                        memset(buf, '\0', 64 + 1);
+                        memset(bin, '0', 32);
+                        gmp_sprintf(buf, "%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 32, OUTPUT);
+                    }
+                }
+            } else {
+                if (FLAG_X == 0) {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "03%0.64Zx # target\n", target_publickey.x);
                     } else if (FLAG_FORMAT == 2) {
                         char buf[66 + 1];
                         unsigned char bin[33];
                         memset(buf, '\0', 66 + 1);
                         memset(bin, '0', 33);
-                        gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
+                        gmp_sprintf(buf, "03%0.64Zx", target_publickey.x);
                         hexs2bin(buf, bin);
                         fwrite(bin, 1, 33, OUTPUT);
                     }
-                }
-                double_t perc = calc_perc(i, M);
-                printf("\r%0.6lf", perc);
-                fflush(stdout);
-            }
-            if (mpz_tstbit(target_publickey.y, 0) == 0) {      // Even
-                if (FLAG_FORMAT == 1) {
-                    gmp_fprintf(OUTPUT, "02%0.64Zx # target\n", target_publickey.x);
-                } else if (FLAG_FORMAT == 2) {
-                    char buf[66 + 1];
-                    unsigned char bin[33];
-                    memset(buf, '\0', 66 + 1);
-                    memset(bin, '0', 33);
-                    gmp_sprintf(buf, "02%0.64Zx", target_publickey.x);
-                    hexs2bin(buf, bin);
-                    fwrite(bin, 1, 33, OUTPUT);
-                }
-            } else {
-                if (FLAG_FORMAT == 1) {
-                    gmp_fprintf(OUTPUT, "03%0.64Zx # target\n", target_publickey.x);
-                } else if (FLAG_FORMAT == 2) {
-                    char buf[66 + 1];
-                    unsigned char bin[33];
-                    memset(buf, '\0', 66 + 1);
-                    memset(bin, '0', 33);
-                    gmp_sprintf(buf, "03%0.64Zx", target_publickey.x);
-                    hexs2bin(buf, bin);
-                    fwrite(bin, 1, 33, OUTPUT);
+                } else {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[64 + 1];
+                        unsigned char bin[32];
+                        memset(buf, '\0', 64 + 1);
+                        memset(bin, '0', 32);
+                        gmp_sprintf(buf, "%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 32, OUTPUT);
+                    }
                 }
             }
         } else {
@@ -240,55 +336,111 @@ int main(int argc, char **argv)
 
                 Point_Addition(&sum_publickey, &target_publickey, &dst_publickey);
                 if (mpz_tstbit(dst_publickey.y, 0) == 0) {      // Even
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "02%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "02%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 } else {
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "03%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "03%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # - %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 }
 
                 Point_Addition(&negated_publickey, &target_publickey, &dst_publickey);
                 if (mpz_tstbit(dst_publickey.y, 0) == 0) {      // Even
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "02%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "02%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "02%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 } else {
-                    if (FLAG_FORMAT == 1) {
-                        gmp_fprintf(OUTPUT, "03%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
-                    } else if (FLAG_FORMAT == 2) {
-                        char buf[66 + 1];
-                        unsigned char bin[33];
-                        memset(buf, '\0', 66 + 1);
-                        memset(bin, '0', 33);
-                        gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
-                        hexs2bin(buf, bin);
-                        fwrite(bin, 1, 33, OUTPUT);
+                    if (FLAG_X == 0) {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "03%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[66 + 1];
+                            unsigned char bin[33];
+                            memset(buf, '\0', 66 + 1);
+                            memset(bin, '0', 33);
+                            gmp_sprintf(buf, "03%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 33, OUTPUT);
+                        }
+                    } else {
+                        if (FLAG_FORMAT == 1) {
+                            gmp_fprintf(OUTPUT, "%0.64Zx # + %Zx\n", dst_publickey.x, sum_key);
+                        } else if (FLAG_FORMAT == 2) {
+                            char buf[64 + 1];
+                            unsigned char bin[32];
+                            memset(buf, '\0', 64 + 1);
+                            memset(bin, '0', 32);
+                            gmp_sprintf(buf, "%0.64Zx", dst_publickey.x);
+                            hexs2bin(buf, bin);
+                            fwrite(bin, 1, 32, OUTPUT);
+                        }
                     }
                 }
 
@@ -296,33 +448,63 @@ int main(int argc, char **argv)
                 mpz_set(sum_publickey.x, dst_publickey.x);
                 mpz_set(sum_publickey.y, dst_publickey.y);
                 mpz_add(sum_key, sum_key, base_key);
-                double_t perc = calc_perc(i, M);
-                printf("\r%0.6lf", perc);
-                fflush(stdout);
+                if (i % 10000 == 0) {
+                    double_t perc = calc_perc(i, M);
+                    printf("\r%0.6lf", perc);
+                    fflush(stdout);
+                }
             }
             if (mpz_tstbit(target_publickey.y, 0) == 0) {      // Even
-                if (FLAG_FORMAT == 1) {
-                    gmp_fprintf(OUTPUT, "02%0.64Zx # target\n", target_publickey.x);
-                } else if (FLAG_FORMAT == 2) {
-                    char buf[66 + 1];
-                    unsigned char bin[33];
-                    memset(buf, '\0', 66 + 1);
-                    memset(bin, '0', 33);
-                    gmp_sprintf(buf, "02%0.64Zx", target_publickey.x);
-                    hexs2bin(buf, bin);
-                    fwrite(bin, 1, 33, OUTPUT);
+                if (FLAG_X == 0) {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "02%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[66 + 1];
+                        unsigned char bin[33];
+                        memset(buf, '\0', 66 + 1);
+                        memset(bin, '0', 33);
+                        gmp_sprintf(buf, "02%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 33, OUTPUT);
+                    }
+                } else {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[64 + 1];
+                        unsigned char bin[32];
+                        memset(buf, '\0', 64 + 1);
+                        memset(bin, '0', 32);
+                        gmp_sprintf(buf, "%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 32, OUTPUT);
+                    }
                 }
             } else {
-                if (FLAG_FORMAT == 1) {
-                    gmp_fprintf(OUTPUT, "03%0.64Zx # target\n", target_publickey.x);
-                } else if (FLAG_FORMAT == 2) {
-                    char buf[66 + 1];
-                    unsigned char bin[33];
-                    memset(buf, '\0', 66 + 1);
-                    memset(bin, '0', 33);
-                    gmp_sprintf(buf, "03%0.64Zx", target_publickey.x);
-                    hexs2bin(buf, bin);
-                    fwrite(bin, 1, 33, OUTPUT);
+                if (FLAG_X == 0) {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "03%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[66 + 1];
+                        unsigned char bin[33];
+                        memset(buf, '\0', 66 + 1);
+                        memset(bin, '0', 33);
+                        gmp_sprintf(buf, "03%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 33, OUTPUT);
+                    }
+                } else {
+                    if (FLAG_FORMAT == 1) {
+                        gmp_fprintf(OUTPUT, "%0.64Zx # target\n", target_publickey.x);
+                    } else if (FLAG_FORMAT == 2) {
+                        char buf[64 + 1];
+                        unsigned char bin[32];
+                        memset(buf, '\0', 64 + 1);
+                        memset(bin, '0', 32);
+                        gmp_sprintf(buf, "%0.64Zx", target_publickey.x);
+                        hexs2bin(buf, bin);
+                        fwrite(bin, 1, 32, OUTPUT);
+                    }
                 }
             }
 
@@ -358,6 +540,7 @@ void showhelp()
     printf("-p key\t\tPublickey to be substracted compress or uncompress\n");
     printf("-r A:B\t\trange A to B\n");
     printf("-R\t\tSet the publickey substraction Random instead of secuential\n");
+    printf("-x\t\tX point only without extra byte of odd/even of Y point\n");
 }
 
 
@@ -459,6 +642,8 @@ void set_range(char *param)
     if (tk.n == 2) {
         mpz_init_set_str(min_range, nextToken(&tk), 16);
         mpz_init_set_str(max_range, nextToken(&tk), 16);
+        gmp_fprintf(stderr, "[+] Min range: %Zx\n", min_range);
+        gmp_fprintf(stderr, "[+] Max range: %Zx\n", max_range);
     } else {
         fprintf(stderr, "%i\n", tk.n);
         fprintf(stderr, "[E] Invalid range expected format A:B\n");

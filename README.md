@@ -5,13 +5,28 @@ Generate multiple but different "copies" of a publickey, Actually Added and subs
 
 Download, clone this repository:
 
-`git clone https://github.com/albertobsd/keysubtracter.git`
+`git clone https://github.com/kanhavishva/keysubtracter.git`
 
 Compile:
 
 `make`
 
 ## Make copies of any publickey
+
+```
+keysubtracter.exe -h
+
+Usage:
+-h              show this help
+-b bits         For some puzzles you only need a bit range
+-n number       Number of publikeys to be geneted, this numbe will be even
+-f number       Format: 1 for text, 2 for binary
+-o file         Output file
+-p key          Publickey to be substracted compress or uncompress
+-r A:B          range A to B
+-R              Set the publickey substraction Random instead of secuential
+-x              X point only without extra byte of odd/even of Y point
+```
 
 This copies are generated at different offset of the orginal publickey.
 
